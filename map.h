@@ -15,15 +15,15 @@ class Map {																// Map class: simulation manager and container for ti
 public :
 	Map();																		// default constructor
 	//Map(int W, int H, float iniErosionStrength, float iniFlowVar);				// constructor with dims, erosion strength, and flow variance parameters
-	Map(int W, int H, float iniErosionStrength, float iniFlowVar, int iniWater, int maxH, int terrainType, int maxNoise);
+	Map(int W, int H, float iniErosionStrength, int iniWater, int maxH, int terrainType, int maxNoise);
 	~Map();																		// destructor
 	Tile* getTileAt(int xCoord, int yCoord);									// fetches pointer to tile located at specified coords
 																					// returns: pointer to specified Tile
 	void findNeighbors();														// iterates through each tile, finding and assigning neighbors
 	void dropRain(int x, int y, int n);											// adds n units of water onto tile at specified x,y coords
 	void randRain(int n);														// adds n units of water onto random tiles
-	unsigned int tick();														// performs 1 tick of water flow simulation
-																					// returns: number of water transfers between tiles
+	void tick();																// performs 1 tick of water flow simulation
+	void tickN(int n);															// performs n ticks of water flow simulation
 	uint8_t getSurfaceHeightAt(int xCoord, int yCoord);							// fetches the surface height of the tile at the specified coords
 																					// returns: specified tile's surface height (0-255 inclusive)
 
@@ -33,7 +33,6 @@ private :
 	int seaLevel;																// elevation below which terrain is covered by water
 	std::vector<std::vector<Tile>> tileGrid;									// 2d vector of Tile objects
 	float erosionStrength;														// decimal (0-1 inclusive) prescribing relative erosion strength
-	float flowVariance;															// decimal (0-1 inclusive) prescribing relative flow direction variance
 	void genTerrain_Random(uint8_t maxHeight, int noiseFactor);					// generate random terrain, up to specified max height (default=255)
 	void genTerrain_Cliff(uint8_t maxHeight, int noiseFactor);					// generate terrain with a cliff bisecting the map
 	void genTerrain_Cone(uint8_t maxHeight, int noiseFactor);					// generate terrain in a cone shape, up to specified max (default=255)

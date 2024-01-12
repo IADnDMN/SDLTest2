@@ -10,23 +10,13 @@ Map::Map() {
 	this->width = 192;
 	this->height = 108;
 	this->erosionStrength = 0.5f;
-	this->flowVariance = 0.2f;
 	this->genTerrain_Random(255, 10);
 	this->findNeighbors();
 }
-//Map::Map(int W, int H, float iniErosionStrength, float iniFlowVar) {
-//	this->width = W;
-//	this->height = H;
-//	this->erosionStrength = iniErosionStrength;
-//	this->flowVariance = iniFlowVar;
-//	this->genTerrain_Random(255, RAND_NOISE);
-//	this->findNeighbors();
-//}
-Map::Map(int W, int H, float iniErosionStrength, float iniFlowVar, int iniWater, int maxH, int terrainType, int maxNoise) {
+Map::Map(int W, int H, float iniErosionStrength, int iniWater, int maxH, int terrainType, int maxNoise) {
 	this->width = W;
 	this->height = H;
 	this->erosionStrength = iniErosionStrength;
-	this->flowVariance = iniFlowVar;
 	if (terrainType == 0) {
 		this->genTerrain_Cliff(maxH, maxNoise);
 	} else if (terrainType == 1) {
@@ -112,7 +102,7 @@ void Map::randRain(int n) {
 	}
 }
 
-unsigned int Map::tick() {
+void Map::tick() {
 	for (int z = 0; z < 256; z++) {
 		for (int i = 0; i < this->width; i++) {
 			for (int j = 0; j < this->height; j++) {
@@ -122,7 +112,26 @@ unsigned int Map::tick() {
 			}
 		}
 	}
-	return 0;
+}
+
+//void Map::tickN(int n) {
+//	for (int z = 0; z < 256; z++) {
+//		for (int i = 0; i < this->width; i++) {
+//			for (int j = 0; j < this->height; j++) {
+//				if (this->tileGrid[i][j].getSurface() == z) {
+//					for (int t = n; t > 0; t--) {
+//						this->tileGrid[i][j].settleWater();
+//					}
+//				}
+//			}
+//		}
+//	}
+//}
+
+void Map::tickN(int n) {
+	for (int t = n; t > 0; t--) {
+		this->tick();
+	}
 }
 
 uint8_t Map::getSurfaceHeightAt(int xCoord, int yCoord) {
@@ -185,9 +194,9 @@ void Map::genTerrain_Slope(uint8_t maxHeight, int noiseFactor) {
 		float column = i;
 		float numColumns = this->width;
 		progress = column / numColumns;
-		h = (uint8_t)round(progress * maxH);
+		h = 255 - (uint8_t)round(progress * maxH);
 		for (int j = 0; j < this->height; j++) {
-			this->tileGrid[i].push_back(Tile(i, j, 255-h, this->erosionStrength));
+			this->tileGrid[i].push_back(Tile(i, j, h, this->erosionStrength));
 		}
 	}
 	this->addTerrainNoise(noiseFactor);

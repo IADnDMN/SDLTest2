@@ -15,15 +15,15 @@
 const int WIN_WIDTH = 1900;														// game window width
 const int WIN_HEIGHT = 1000;													// game window height
 const int INITIAL_RAIN = 1000;													// units of rain to begin on the map
-const int RAIN_PER_TICK = 100;													// units of rain to fall each tick of the simulation
-const float EROSION_STRENGTH = 0.6f;											// relative strength of erosion forces
-const float FLOW_VARIANCE = 0.2f;												// relative variability of water flow
+const int RAIN_EACH_FRAME = 20;													// units of rain to fall each frame of the simulation loop
+const float EROSION_STRENGTH = 0.67f;											// relative strength of erosion forces
 const int MAP_WIDTH = 190;														// width of the map, in tiles
 const int MAP_HEIGHT = 100;														// height of the map, in tiles
-const int MAX_MAP_NOISE = 30;
+const int MAX_MAP_NOISE = 30;													// maximum absolute value of noise to be added to the map
 const int MAX_FRAME_COUNT = 1000;												// maximum number of frames for the sim to run
+const int TICKS_PER_FRAME = 4;													// simulation ticks performed per sim body loop
 
-const bool DRAW_WATER = false;													// DEBUG: whether to draw tiles as blue if underwater
+const bool DRAW_WATER = true;													// DEBUG: whether to draw tiles as blue if underwater
 const int POSTSIM_PAUSE = 5000;													// DEBUG: time (ms) to hold the final frame before exiting
 
 
@@ -57,12 +57,13 @@ int main(int argc, char* args[])
 			// Get window surface:
 			screenSurface = SDL_GetWindowSurface(window);
 
-			Map terrainMap = Map(MAP_WIDTH, MAP_HEIGHT, EROSION_STRENGTH, FLOW_VARIANCE, INITIAL_RAIN, 255, 1, MAX_MAP_NOISE);
+			Map terrainMap = Map(MAP_WIDTH, MAP_HEIGHT, EROSION_STRENGTH, INITIAL_RAIN, 255, 1, MAX_MAP_NOISE);
 
 			// Loop for [MAX_FRAME_COUNT] frames:
 			for (int i=MAX_FRAME_COUNT; i>0; i--) {
-				terrainMap.tick();
-				terrainMap.randRain(RAIN_PER_TICK);
+				//terrainMap.tick();
+				terrainMap.tickN(TICKS_PER_FRAME);
+				terrainMap.randRain(RAIN_EACH_FRAME);
 				drawMap(&terrainMap, screenSurface);
 
 				SDL_UpdateWindowSurface(window);								// update window after each draw
