@@ -11,11 +11,11 @@
 #include <SDL.h>
 #include "tile.h"
 
-class Map : public Tile {												// Map class extends Tile class to gain access to protected methods
+class Map {																// Map class: simulation manager and container for tile objects
 public :
 	Map();																		// default constructor
-	Map(int W, int H, float iniErosionStrength, float iniFlowVar);				// constructor with dims, erosion strength, and flow variance parameters
-	Map(int W, int H, float iniErosionStrength, float iniFlowVar, int iniWater, int maxH=255, int terrainType=-1);
+	//Map(int W, int H, float iniErosionStrength, float iniFlowVar);				// constructor with dims, erosion strength, and flow variance parameters
+	Map(int W, int H, float iniErosionStrength, float iniFlowVar, int iniWater, int maxH, int terrainType, int maxNoise);
 	~Map();																		// destructor
 	Tile* getTileAt(int xCoord, int yCoord);									// fetches pointer to tile located at specified coords
 																					// returns: pointer to specified Tile
@@ -34,9 +34,10 @@ private :
 	std::vector<std::vector<Tile>> tileGrid;									// 2d vector of Tile objects
 	float erosionStrength;														// decimal (0-1 inclusive) prescribing relative erosion strength
 	float flowVariance;															// decimal (0-1 inclusive) prescribing relative flow direction variance
-	void genTerrain_Random(uint8_t maxHeight=255);								// generate random terrain, up to specified max height (default=255)
-	void genTerrain_Cone(uint8_t maxHeight=255);								// generate terrain in a cone shape, up to specified max (default=255)
-	void genTerrain_Slope(uint8_t maxHeight=255);								// generate terrain in a North-to-South slope, to max (default=255)
+	void genTerrain_Random(uint8_t maxHeight, int noiseFactor);					// generate random terrain, up to specified max height (default=255)
+	void genTerrain_Cliff(uint8_t maxHeight, int noiseFactor);					// generate terrain with a cliff bisecting the map
+	void genTerrain_Cone(uint8_t maxHeight, int noiseFactor);					// generate terrain in a cone shape, up to specified max (default=255)
+	void genTerrain_Slope(uint8_t maxHeight, int noiseFactor);					// generate terrain in a North-to-South slope, to max (default=255)
 	void addTerrainNoise(uint8_t maxDelta);										// add noise to existing terrain, up to a specified change
 };
 #endif
